@@ -1,0 +1,32 @@
+/*** Vendor prefixes for gradients ***/
+
+VENDOR_PREFIXES          = webkit moz o ms official
+
+/*** Typography ***/
+
+DEFAULT_FONT_SIZE         = 16px
+DEFAULT_FONT              = "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Verdana, Tahoma, sans-serif;
+DEFAULT_LINE_HEIGHT       = 1.5em
+
+HEAD_FONT                 = DEFAULT_FONT
+
+
+/*** Grid ***/
+
+GRID_COLUMNS             = 12
+GRID_COLUMN_WIDTH        = 60px
+GRID_GUTTER_WIDTH        = 20px
+GRID_ROW_WIDTH           = (GRID_COLUMNS * GRID_COLUMN_WIDTH) + (GRID_GUTTER_WIDTH * (GRID_COLUMNS - 1))
+
+FLUID_GRID_COLUMN_WIDTH  = (GRID_COLUMN_WIDTH / GRID_ROW_WIDTH * 100)%
+FLUID_GRID_GUTTER_WIDTH  = (GRID_GUTTER_WIDTH / GRID_ROW_WIDTH * 100)%
+
+
+/*** Colors ***/
+
+TEXT_COLOR               = #5B491B
+LINK_COLOR               = #1245c1
+HEAD_COLOR               = #5B491B
+VISITED_LINK_COLOR       = #0b0076
+
+@import "default"

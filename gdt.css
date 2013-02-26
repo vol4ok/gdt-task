@@ -1,0 +1,14 @@
+.todo{font:13px "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Verdana,Tahoma,sans-serif;width:600px;margin:50px auto;border-collapse:collapse;}
+.todo th{min-height:40px;border-bottom:1px dotted #ccc;padding:10px}
+.todo td{vertical-align:top;width:33.3%;min-height:40px}
+.todo td,.todo th{border-left:1px dotted #ccc;}
+.todo td:first-child,.todo th:first-child{border-left:none}
+.card{position:relative;background:#c1d6ea;-webkit-user-select:none;-moz-user-select:none;user-select:none;cursor:pointer;border:1px solid #444;margin:10px;padding:10px}
+.card.drag{cursor:move;opacity:.7;filter:e(%("alpha($opacity=%d)", $opacity))}
+.card.task{background:#c1d6ea}
+.card.bug{background:#e9babb}
+.create-card{width:600px;margin:10px auto;padding:10px;}
+.create-card .name-input{border:1px solid #ccc;border-radius:4px;-webkit-border-radius:4px;width:580px;padding:8px;font-size:16px;outline:none;margin-bottom:20px}
+.create-card .reset-btn{color:#fff;border:1px solid transparent;background:#a00;padding:4px 12px;opacity:.2;filter:e(%("alpha($opacity=%d)", $opacity));border-radius:3px;-webkit-border-radius:3px;float:right;-moz-transition:opacity .3s ease-in-out;-webkit-transition:opacity .3s ease-in-out;-o-transition:opacity .3s ease-in-out;transition:opacity .3s ease-in-out;}
+.create-card .reset-btn:hover{opacity:1;filter:e(%("alpha($opacity=%d)", $opacity))}
+.create-card .reset-btn:active{background:#f00}

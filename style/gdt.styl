@@ -1,0 +1,68 @@
+@import "config"
+@import "vendors"
+@import "gradients"
+@import "mixins"
+
+COLUMN_WIDTH = 200px
+
+.todo
+  font: 13px DEFAULT_FONT
+  width: 600px
+  margin: 50px auto
+  border-collapse: collapse
+  th
+    min-height: 40px
+    border-bottom: 1px dotted #ccc
+    padding: 10px
+  td
+    vertical-align: top
+    width: 33.3%
+    min-height: 40px
+  td, th
+    border-left: 1px dotted #ccc
+    &:first-child
+      border-left: none
+
+.card
+  position: relative
+  background: #c1d6ea
+  user-select: none
+  cursor: pointer
+  &.drag
+    absolute
+    cursor: move
+    opacity: .7
+  &.task
+    background: #c1d6ea
+  &.bug
+    background: #e9babb
+
+  border: 1px solid #444
+  margin: 10px
+  padding: 10px
+
+.create-card
+  width: 600px
+  margin: 10px auto
+  padding: 10px
+  .name-input
+    border: 1px solid #ccc
+    border-radius: 4px
+    width: 580px
+    padding: 8px
+    font-size: 16px
+    outline: none
+    margin-bottom: 20px
+  .reset-btn
+    color: white
+    border: 1px solid transparent
+    background: #a00
+    padding: 4px 12px
+    opacity: .2
+    border-radius: 3px
+    float: right
+    transition: opacity .3s ease-in-out
+    &:hover
+      opacity: 1
+    &:active
+      background: red

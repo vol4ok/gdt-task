@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>GDT</title>
+  <script src="jquery.js"></script>
+  <script src="underscore.js"></script>
+  <script src="gdt.js"></script>
+  <link rel="stylesheet" href="gdt.css">
+</head>
+<body>
+
+  <script type="text/template" id="task-template">
+    <div <%= type == "BUG" ? 'class="red"' : '' %> id="task-<%= id %>">#<%= id %> <%= name %></div>
+  </script>
+
+  <table class="todo">
+    <thead>
+      <tr>
+        <th>ToDo</th>
+        <th>In Progress</th>
+        <th>Done</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="todo"></td>
+        <td id="in-progress"></td>
+        <td id="done"></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="create-card" id="create-card">
+    <input class="name-input" type="text" name="add" value="" placeholder="create new todo <press `Enter` to submit>"><br>
+    <input class="isbug-input" type="checkbox" name="bug" value=""><label for="bug">bug?</label>
+    <button class="reset-btn">Reset</button>
+  </div>
+  
+</body>
+</html>
