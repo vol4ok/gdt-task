@@ -1,8 +1,11 @@
 $ = require "core.js"
+$.ext require "child_process"
+
 b = require "nbuild"
 
 build = (callback) ->
   $.parallel [
+    (cb) -> b.ff_coffee "script/test.coffee", "test/test.js", {bare:yes}, cb
     (cb) -> 
       $.chain [
         (fn) -> b.fs_coffee "script/gdt.coffee", {bare:yes}, fn
@@ -18,6 +21,11 @@ build = (callback) ->
     console.log "OK!"
     callback()
 
+test = (callback) ->
+   proc = $.spawn('mocha-phantomjs', ['test/test.html'])
+   proc.stdout.on 'data', (data) -> process.stdout.write(data)
+   proc.on 'exit', (code) -> callback(code)
 
 task "sbuild", -> build(->)
-task "build", -> build(->)
+task "build", -> build(->)task "build", -> build(->)
+task "test", -> test(->)
