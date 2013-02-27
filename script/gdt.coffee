@@ -8,23 +8,6 @@ STATE_TODO      = 1
 STATE_PROGRESS  = 2
 STATE_DONE      = 3
 
-# class DragController
-#   constructor: ->
-
-#   on_initDrag: (e, @draggedObject) ->
-#     $(document).one("mouseup", @on_mouseUp)
-#     $(document).on("mousemove", @mouseMove)
-#     $(document).trigger("start-drag", @draggedObject)
-
-#   on_mouseMove: (e) =>
-#     $(document).trigger("drag", this)
-
-#   on_mouseUp: (e) =>
-#     $(document).off("mousemove", @mouseMove)
-#     $(document).trigger("drop", {x: e.pageX, y: e.pageY, obj: @draggedObject})
-#     $(document).trigger("stop-drag", @draggedObject)
-
-# g_dragCtr = new DragController()
 
 class TaskView
   template: "<div class=\"card <%= type %>\" id=\"task-<%= id %>\">#<%= id %> <%= name %></div>"
@@ -33,7 +16,6 @@ class TaskView
 
   setState: (state) ->
     return unless STATE_TODO <= state <= STATE_DONE
-    console.log "update state", @id, state
     @data.state = state
     localStorage[@id] = JSON.stringify(@data)
 
@@ -48,8 +30,6 @@ class TaskView
     return @el
 
   on_mouseDown: (e) =>
-    #$(document).trigger("init-drag", this)
-    #g_dragCtr.startDrag(this)
     app.draggedObj = this
     @el.addClass("drag")
     offset = @el.offset()
@@ -74,13 +54,13 @@ class TaskView
     @el.remove()
     delete @el
 
+
 class TaskListView
   constructor: (options) ->
     @state = options.state
     @id = options.id
     @el = $("#" + @id)
     $(document).on("start-drag",@on_startDrag)
-    #$(document).on("stop-drag", @on_stopDrag)
     $(document).on("drop", @on_drop)
     @views = {}
 
@@ -100,7 +80,6 @@ class TaskListView
     return true
 
   render: ->
-    console.log @views
     for id, view of @views
       @el.append(view.render())
 
@@ -111,10 +90,8 @@ class TaskListView
 
   on_drop: (e, ctx) =>
     if (@offset.left <= ctx.x <= @offset.right) and (@offset.top <= ctx.y <= @offset.bottom)
-      console.log "DROP IN", @id
       @render() if @add(ctx.obj)
     else
-      console.log "DROP OUT", @id
       @render() if @remove(ctx.obj)
 
 
@@ -134,7 +111,6 @@ class CreateCardView
 
   on_keyUp: (e) =>
     if e.keyCode is 13
-      console.log @bugCheckbox.val()
       type = if @bugCheckbox.prop("checked") then CARD_BUG else CARD_TASK
       $(document).trigger("submit-card", {name: @nameInput.val(), type: type})
       @nameInput.val('')
@@ -168,13 +144,12 @@ class App
     @todoList.reset()
     @inProcessList.reset()
     @doneList.reset()
+
     $.getJSON "cards.json", (data) =>
       cards = {}
       for card in data
         cards[card.id] = card
-      console.log cards
       $.extend(cards, @_loadFromStorage())    
-      console.log cards
       for key, card of cards
         card.state ?= STATE_TODO
         switch card.state
