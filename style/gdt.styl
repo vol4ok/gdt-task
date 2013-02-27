@@ -5,11 +5,15 @@
 
 COLUMN_WIDTH = 200px
 
+body
+  user-select: none
+
 .todo
   font: 13px DEFAULT_FONT
   width: 600px
   margin: 50px auto
   border-collapse: collapse
+  user-select: none
   th
     min-height: 40px
     border-bottom: 1px dotted #ccc
@@ -19,6 +23,7 @@ COLUMN_WIDTH = 200px
     width: 33.3%
     min-height: 40px
   td, th
+    user-select: none
     border-left: 1px dotted #ccc
     &:first-child
       border-left: none
