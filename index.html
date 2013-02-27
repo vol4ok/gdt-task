@@ -10,10 +10,6 @@
 </head>
 <body>
 
-  <script type="text/template" id="task-template">
-    <div <%= type == "BUG" ? 'class="red"' : '' %> id="task-<%= id %>">#<%= id %> <%= name %></div>
-  </script>
-
   <table class="todo">
     <thead>
       <tr>
@@ -30,6 +26,7 @@
       </tr>
     </tbody>
   </table>
+
   <div class="create-card" id="create-card">
     <input class="name-input" type="text" name="add" value="" placeholder="create new todo <press `Enter` to submit>"><br>
     <input class="isbug-input" type="checkbox" name="bug" value=""><label for="bug">bug?</label>
