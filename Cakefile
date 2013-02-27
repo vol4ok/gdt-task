@@ -27,5 +27,5 @@ test = (callback) ->
    proc.on 'exit', (code) -> callback(code)
 
 task "sbuild", -> build(->)
-task "build", -> build(->)task "build", -> build(->)
+task "build", -> build(->)
 task "test", -> test(->)
