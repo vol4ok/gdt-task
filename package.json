@@ -1,0 +1,30 @@
+{
+  "name": "gdt-task",
+  "version": "0.0.0",
+  "description": "GDT task solution",
+  "main": "gdt.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "core.js": "~0.4.2",
+    "express": "~3.1.0",
+    "nbuild": "~0.1.4",
+    "chai": "~1.5.0"
+  },
+  "devDependencies": {
+    "mocha": "~1.8.1"
+  },
+  "scripts": {
+    "test": "cake test",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vol4ok/gdt-task.git"
+  },
+  "author": "Andrew Volkov <hello@vol4ok.net>",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "gitHead": "a32379bebe0e07b185e4be708c87a7e847eafd9d"
+}
