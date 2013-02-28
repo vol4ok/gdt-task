@@ -2,21 +2,13 @@ describe "GDT", ->
 
   describe "app", ->
 
-    app = null
+    app = new App
 
-    before (done) ->
-      app = new App(callback: done)
-
-    it "app test-1", ->
+    it "shoudl create card and add it in todo list", ->
       expect(app).to.be.a("object")
 
-    # it "shoudl create card and add it in todo list", ->
-    #   app.createCard("test card", CARD_TASK)
-    #   console.log app.todoList.views
-    #   expect(app).to.be.a("object")
-
-    # it "shoudl reset localStorage", ->
-    #   expect(app).to.be.a("object")
+    it "shoudl reset localStorage", ->
+      expect(app).to.be.a("object")
 
 
 

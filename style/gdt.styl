@@ -21,7 +21,7 @@ body
   td
     vertical-align: top
     width: 33.3%
-    min-height: 40px
+    height: 100px
   td, th
     user-select: none
     border-left: 1px dotted #ccc
@@ -45,12 +45,20 @@ body
   border: 1px solid #444
   margin: 10px
   padding: 10px
+  &.edit
+    background: #eee
+    cursor: auto
+    user-select: text
+  &.active
+    outline-offset: 1px
+    outline: 1px dotted #aaa
+    //border: 2px solid blue
 
 .create-card
   width: 600px
   margin: 10px auto
   padding: 10px
-  .name-input
+  .text-input
     border: 1px solid #ccc
     border-radius: 4px
     width: 580px
@@ -58,7 +66,7 @@ body
     font-size: 16px
     outline: none
     margin-bottom: 20px
-  .reset-btn
+  .btn
     color: white
     border: 1px solid transparent
     background: #a00
@@ -71,3 +79,6 @@ body
       opacity: 1
     &:active
       background: red
+
+  .load
+    background: #0f7978

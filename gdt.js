@@ -12,16 +12,21 @@ STATE_DONE = 3;
 TaskView = function () {
     TaskView.prototype.template = '<div class="card <%= type %>" id="task-<%= id %>">#<%= id %> <%= name %></div>';
     function TaskView(data) {
-        this.mouseMove = __bind(this.mouseMove, this);
+        this.on_mouseMove = __bind(this.on_mouseMove, this);
         this.on_mouseUp = __bind(this.on_mouseUp, this);
         this.on_mouseDown = __bind(this.on_mouseDown, this);
+        this.on_globalKeyDown = __bind(this.on_globalKeyDown, this);
+        this.on_keyDown = __bind(this.on_keyDown, this);
+        this.on_blur = __bind(this.on_blur, this);
+        this.on_doubleClick = __bind(this.on_doubleClick, this);
+        this.on_selectCard = __bind(this.on_selectCard, this);
+        this.on_click = __bind(this.on_click, this);
         this.render(data);
     }
     TaskView.prototype.setState = function (state) {
         if (!(STATE_TODO <= state && state <= STATE_DONE)) {
             return;
         }
-        console.log('update state', this.id, state);
         this.data.state = state;
         return localStorage[this.id] = JSON.stringify(this.data);
     };
@@ -34,10 +39,73 @@ TaskView = function () {
         localStorage[this.id] = JSON.stringify(this.data);
         this.el = $(_.template(this.template, this.data));
         this.el.mousedown(this.on_mouseDown);
+        this.el.click(this.on_click);
+        this.el.dblclick(this.on_doubleClick);
+        $(document).on('select-card', this.on_selectCard);
         return this.el;
+    };
+    TaskView.prototype.on_click = function (e) {
+        if (this.el.hasClass('edit')) {
+            return;
+        }
+        return $(document).trigger('select-card', this.id);
+    };
+    TaskView.prototype.on_selectCard = function (e, id) {
+        if (this.id === id) {
+            this.el.addClass('active');
+            return $(document).on('keydown', this.on_globalKeyDown);
+        } else {
+            $(document).off('keydown', this.on_globalKeyDown);
+            return this.el.removeClass('active');
+        }
+    };
+    TaskView.prototype.on_doubleClick = function (e) {
+        var range, sel;
+        if (this.el.hasClass('edit')) {
+            return;
+        }
+        this.el.addClass('edit');
+        this.el.attr('contenteditable', 'true');
+        this.el.text(this.data.name);
+        range = document.createRange();
+        sel = window.getSelection();
+        range.setStart(this.el.get(0), 1);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        this.el.focus();
+        this.el.one('blur', this.on_blur);
+        return this.el.on('keydown', this.on_keyDown);
+    };
+    TaskView.prototype.on_blur = function (e) {
+        if (!this.el.hasClass('edit')) {
+            return;
+        }
+        this.el.off('keydown');
+        this.el.removeAttr('contenteditable');
+        this.el.removeClass('edit');
+        this.data.name = this.el.text();
+        this.el.text('#' + this.id + ' ' + this.data.name);
+        return localStorage[this.id] = JSON.stringify(this.data);
+    };
+    TaskView.prototype.on_keyDown = function (e) {
+        if (this.el.hasClass('edit') && e.keyCode === 13) {
+            return this.el.trigger('blur');
+        }
+    };
+    TaskView.prototype.on_globalKeyDown = function (e) {
+        if (this.el.hasClass('active') && (e.keyCode === 8 || e.keyCode === 46)) {
+            e.preventDefault();
+            $(document).trigger('remove-card', this);
+            return false;
+        }
     };
     TaskView.prototype.on_mouseDown = function (e) {
         var offset;
+        if (this.el.hasClass('edit')) {
+            return;
+        }
+        console.log('mousedown');
         app.draggedObj = this;
         this.el.addClass('drag');
         offset = this.el.offset();
@@ -46,11 +114,11 @@ TaskView = function () {
             y: offset.top + e.offsetY
         };
         $(document).one('mouseup', this.on_mouseUp);
-        $(document).on('mousemove', this.mouseMove);
+        $(document).on('mousemove', this.on_mouseMove);
         return $(document).trigger('start-drag', this);
     };
     TaskView.prototype.on_mouseUp = function (e) {
-        $(document).off('mousemove', this.mouseMove);
+        $(document).off('mousemove', this.on_mouseMove);
         $(document).trigger('drop', {
             x: e.pageX,
             y: e.pageY,
@@ -64,13 +132,16 @@ TaskView = function () {
         this.el.removeClass('drag');
         return this.offset = null;
     };
-    TaskView.prototype.mouseMove = function (e) {
+    TaskView.prototype.on_mouseMove = function (e) {
         return this.el.css({
             top: e.pageY - this.offset.y,
             left: e.pageX - this.offset.x
         });
     };
     TaskView.prototype.remove = function () {
+        $(document).off('keydown', this.on_globalKeyDown);
+        $(document).off('select-card', this.on_selectCard);
+        $(document).off('mousemove', this.on_mouseMove);
         this.el.remove();
         return delete this.el;
     };
@@ -113,7 +184,6 @@ TaskListView = function () {
     };
     TaskListView.prototype.render = function () {
         var id, view, _ref, _results;
-        console.log(this.views);
         _ref = this.views;
         _results = [];
         for (id in _ref) {
@@ -130,12 +200,10 @@ TaskListView = function () {
     TaskListView.prototype.on_drop = function (e, ctx) {
         var _ref, _ref1;
         if (this.offset.left <= (_ref = ctx.x) && _ref <= this.offset.right && (this.offset.top <= (_ref1 = ctx.y) && _ref1 <= this.offset.bottom)) {
-            console.log('DROP IN', this.id);
             if (this.add(ctx.obj)) {
                 return this.render();
             }
         } else {
-            console.log('DROP OUT', this.id);
             if (this.remove(ctx.obj)) {
                 return this.render();
             }
@@ -145,21 +213,23 @@ TaskListView = function () {
 }();
 CreateCardView = function () {
     function CreateCardView(options) {
+        this.on_loadBtnClick = __bind(this.on_loadBtnClick, this);
         this.on_resetBtnClick = __bind(this.on_resetBtnClick, this);
         this.on_keyUp = __bind(this.on_keyUp, this);
         this.id = options.id;
         this.el = $('#' + this.id);
-        this.nameInput = this.el.find('.name-input');
-        this.bugCheckbox = this.el.find('.isbug-input');
-        this.resetButton = this.el.find('.reset-btn');
+        this.nameInput = this.el.find('.name');
+        this.bugCheckbox = this.el.find('.isbug');
+        this.resetButton = this.el.find('.reset');
+        this.loadButton = this.el.find('.load');
         this.el.focus();
         $(document).keyup(this.on_keyUp);
         this.resetButton.click(this.on_resetBtnClick);
+        this.loadButton.click(this.on_loadBtnClick);
     }
     CreateCardView.prototype.on_keyUp = function (e) {
         var type;
         if (e.keyCode === 13) {
-            console.log(this.bugCheckbox.val());
             type = this.bugCheckbox.prop('checked') ? CARD_BUG : CARD_TASK;
             $(document).trigger('submit-card', {
                 name: this.nameInput.val(),
@@ -171,19 +241,18 @@ CreateCardView = function () {
     CreateCardView.prototype.on_resetBtnClick = function (e) {
         return $(document).trigger('reset-storage');
     };
+    CreateCardView.prototype.on_loadBtnClick = function (e) {
+        return $(document).trigger('load-default');
+    };
     return CreateCardView;
 }();
 App = function () {
-    App.prototype._loadFromStorage = function () {
-        var i, key, result, _i, _ref;
-        result = {};
-        for (i = _i = 0, _ref = localStorage.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-            key = localStorage.key(i);
-            result[key] = JSON.parse(localStorage.getItem(key));
+    function App(options) {
+        if (options == null) {
+            options = {};
         }
-        return result;
-    };
-    function App() {
+        this.on_removeCard = __bind(this.on_removeCard, this);
+        this.on_loadDefault = __bind(this.on_loadDefault, this);
         this.on_resetStorage = __bind(this.on_resetStorage, this);
         this.on_submitCard = __bind(this.on_submitCard, this);
         this.draggedObj = null;
@@ -200,44 +269,68 @@ App = function () {
             id: 'done',
             state: STATE_DONE
         });
-        this._resetLists();
+        this._initLists();
         $(document).on('submit-card', this.on_submitCard);
         $(document).on('reset-storage', this.on_resetStorage);
+        $(document).on('load-default', this.on_loadDefault);
+        $(document).on('remove-card', this.on_removeCard);
     }
-    App.prototype._resetLists = function () {
-        var _this = this;
+    App.prototype._renderLists = function () {
+        this.todoList.render();
+        this.inProcessList.render();
+        return this.doneList.render();
+    };
+    App.prototype._resetLists = function (done) {
         this.todoList.reset();
         this.inProcessList.reset();
-        this.doneList.reset();
+        return this.doneList.reset();
+    };
+    App.prototype._loadCards = function () {
+        var i, key, result, _i, _ref;
+        result = {};
+        for (i = _i = 0, _ref = localStorage.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+            key = localStorage.key(i);
+            result[key] = JSON.parse(localStorage.getItem(key));
+        }
+        return result;
+    };
+    App.prototype._initLists = function () {
+        var card, key, _ref, _ref1;
+        this._resetLists();
+        _ref = this._loadCards();
+        for (key in _ref) {
+            card = _ref[key];
+            if ((_ref1 = card.state) == null) {
+                card.state = STATE_TODO;
+            }
+            switch (card.state) {
+            case STATE_TODO:
+                this.todoList.add(new TaskView(card));
+                break;
+            case STATE_PROGRESS:
+                this.inProcessList.add(new TaskView(card));
+                break;
+            case STATE_DONE:
+                this.doneList.add(new TaskView(card));
+            }
+        }
+        return this._renderLists();
+    };
+    App.prototype._loadDefaultCards = function (done) {
+        var _this = this;
         return $.getJSON('cards.json', function (data) {
-            var card, cards, key, _i, _len, _ref;
-            cards = {};
+            var card, _i, _len, _ref;
             for (_i = 0, _len = data.length; _i < _len; _i++) {
                 card = data[_i];
-                cards[card.id] = card;
-            }
-            console.log(cards);
-            $.extend(cards, _this._loadFromStorage());
-            console.log(cards);
-            for (key in cards) {
-                card = cards[key];
+                if (!!localStorage[card.id]) {
+                    continue;
+                }
                 if ((_ref = card.state) == null) {
                     card.state = STATE_TODO;
                 }
-                switch (card.state) {
-                case STATE_TODO:
-                    _this.todoList.add(new TaskView(card));
-                    break;
-                case STATE_PROGRESS:
-                    _this.inProcessList.add(new TaskView(card));
-                    break;
-                case STATE_DONE:
-                    _this.doneList.add(new TaskView(card));
-                }
+                localStorage[card.id] = JSON.stringify(card);
             }
-            _this.todoList.render();
-            _this.inProcessList.render();
-            return _this.doneList.render();
+            return typeof done === 'function' ? done() : void 0;
         });
     };
     App.prototype.on_submitCard = function (e, data) {
@@ -245,7 +338,22 @@ App = function () {
     };
     App.prototype.on_resetStorage = function (e) {
         localStorage.clear();
-        return this._resetLists();
+        this._resetLists();
+        return this._renderLists();
+    };
+    App.prototype.on_loadDefault = function () {
+        var _this = this;
+        return this._loadDefaultCards(function () {
+            return _this._initLists();
+        });
+    };
+    App.prototype.on_removeCard = function (e, view) {
+        console.log('remove card', view.id);
+        this.todoList.remove(view);
+        this.inProcessList.remove(view);
+        this.doneList.remove(view);
+        localStorage.removeItem(view.id);
+        return view.remove();
     };
     App.prototype.createCard = function (name, type) {
         var card;
@@ -268,6 +376,3 @@ App = function () {
     };
     return App;
 }();
-$(function () {
-    return window.app = new App();
-});

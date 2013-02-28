@@ -2,13 +2,11 @@
 describe("GDT", function() {
   return describe("app", function() {
     var app;
-    app = null;
-    before(function(done) {
-      return app = new App({
-        callback: done
-      });
+    app = new App;
+    it("shoudl create card and add it in todo list", function() {
+      return expect(app).to.be.a("object");
     });
-    return it("app test-1", function() {
+    return it("shoudl reset localStorage", function() {
       return expect(app).to.be.a("object");
     });
   });
