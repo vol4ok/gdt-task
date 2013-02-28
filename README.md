@@ -15,6 +15,22 @@
 * use jquery and underscore but not use extjs and etc (5) — YES!
 * tests — emmm, I started working in this direction... : )
 
+#### Install
+
+Get src:
+
+```
+git clone git://github.com/vol4ok/gdt-task.git
+```
+
+If you have node.js, run:
+
+```
+cd gdt-task
+npm install
+```
+
+
 #### Usage
 
 * `cake build` — rebuild js and css
