@@ -19,3 +19,9 @@
 
 * `cake build` — build js and css
 * `cake test` — run tests
+* `node server.js` — to start sample server
+* open your browser on `http://localhost:2222/` and enjoy
+
+#### Notes
+
+*you can open index.html directly in browser, but json loading will not working in consequence of CORS restrictions*
