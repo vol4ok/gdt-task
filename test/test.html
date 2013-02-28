@@ -20,5 +20,33 @@
       if (window.mochaPhantomJS) { mochaPhantomJS.run(); }
       else { mocha.run(); }
     </script>
+
+    <div style="display:none;">
+      <table class="todo">
+        <thead>
+          <tr>
+            <th>ToDo</th>
+            <th>In Progress</th>
+            <th>Done</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td id="todo"></td>
+            <td id="in-progress"></td>
+            <td id="done"></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="create-card" id="create-card">
+        <input class="name text-input" type="text" name="add" value="" placeholder="create new todo <press `Enter` to submit>"><br>
+        <div>
+          <input class="isbug" type="checkbox" name="bug" value=""><label for="bug">bug?</label>
+          <button class="reset btn">Reset</button>
+          <button class="load btn">Load Sample Data</button>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

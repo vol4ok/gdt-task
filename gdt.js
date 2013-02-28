@@ -105,7 +105,6 @@ TaskView = function () {
         if (this.el.hasClass('edit')) {
             return;
         }
-        console.log('mousedown');
         app.draggedObj = this;
         this.el.addClass('drag');
         offset = this.el.offset();
@@ -286,11 +285,15 @@ App = function () {
         return this.doneList.reset();
     };
     App.prototype._loadCards = function () {
-        var i, key, result, _i, _ref;
+        var i, isNumRexp, key, result, _i, _ref;
         result = {};
+        isNumRexp = /\d+/;
         for (i = _i = 0, _ref = localStorage.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
             key = localStorage.key(i);
-            result[key] = JSON.parse(localStorage.getItem(key));
+            if (!isNumRexp.test(key)) {
+                continue;
+            }
+            result[key] = JSON.parse(localStorage[key]);
         }
         return result;
     };
@@ -348,7 +351,6 @@ App = function () {
         });
     };
     App.prototype.on_removeCard = function (e, view) {
-        console.log('remove card', view.id);
         this.todoList.remove(view);
         this.inProcessList.remove(view);
         this.doneList.remove(view);

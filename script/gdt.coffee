@@ -82,7 +82,6 @@ class TaskView
 
   on_mouseDown: (e) =>
     return if @el.hasClass("edit")
-    console.log "mousedown"
     app.draggedObj = this
     @el.addClass("drag")
     offset = @el.offset()
@@ -210,9 +209,11 @@ class App
 
   _loadCards: ->
     result = {}
+    isNumRexp = /\d+/
     for i in [0...localStorage.length]
       key = localStorage.key(i)
-      result[key] = JSON.parse(localStorage.getItem(key))
+      continue unless isNumRexp.test(key)
+      result[key] = JSON.parse(localStorage[key])
     return result
 
   _initLists: ->
@@ -244,7 +245,6 @@ class App
     @_loadDefaultCards => @_initLists()
 
   on_removeCard: (e, view) =>
-    console.log "remove card", view.id
     @todoList.remove(view) 
     @inProcessList.remove(view) 
     @doneList.remove(view) 
