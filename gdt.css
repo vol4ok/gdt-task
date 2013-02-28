@@ -12,7 +12,7 @@ body{-webkit-user-select:none;-moz-user-select:none;user-select:none}
 .card.active{outline-offset:1px;outline:1px dotted #aaa}
 .create-card{width:600px;margin:10px auto;padding:10px;}
 .create-card .text-input{border:1px solid #ccc;border-radius:4px;-webkit-border-radius:4px;width:580px;padding:8px;font-size:16px;outline:none;margin-bottom:20px}
-.create-card .btn{color:#fff;border:1px solid transparent;background:#a00;padding:4px 12px;opacity:.2;filter:e(%("alpha($opacity=%d)", $opacity));border-radius:3px;-webkit-border-radius:3px;float:right;-moz-transition:opacity .3s ease-in-out;-webkit-transition:opacity .3s ease-in-out;-o-transition:opacity .3s ease-in-out;transition:opacity .3s ease-in-out;}
+.create-card .btn{color:#fff;border:1px solid transparent;background:#a00;padding:4px 12px;margin-left:10px;opacity:.2;filter:e(%("alpha($opacity=%d)", $opacity));border-radius:3px;-webkit-border-radius:3px;float:right;-moz-transition:opacity .3s ease-in-out;-webkit-transition:opacity .3s ease-in-out;-o-transition:opacity .3s ease-in-out;transition:opacity .3s ease-in-out;}
 .create-card .btn:hover{opacity:1;filter:e(%("alpha($opacity=%d)", $opacity))}
 .create-card .btn:active{background:#f00}
 .create-card .load{background:#0f7978}
